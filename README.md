@@ -6,11 +6,11 @@ This is a userscript initiated from [@violentmonkey/generator-userscript](https:
 
 ## Scripts
 
-- Instagram reels speed control: Shows a simple speed control under Instagram videos
+- **Instagram reels speed control:** Shows a simple speed control under Instagram videos
 
 ## Development
 
-``` sh
+```sh
 # Compile and watch
 $ npm run dev
 
