@@ -1,6 +1,12 @@
-# greasemonkey
+# violentmonkey_scripts
+
+Userscripts for [Violentmonkey](https://violentmonkey.github.io/) for various websites
 
 This is a userscript initiated from [@violentmonkey/generator-userscript](https://github.com/violentmonkey/generator-userscript).
+
+## Scripts
+
+- Instagram reels speed control: Shows a simple speed control under Instagram videos
 
 ## Development
 

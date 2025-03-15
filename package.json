@@ -1,7 +1,7 @@
 {
-  "name": "greasemonkey",
+  "name": "violentmonkey_scripts",
   "version": "1.0.0",
-  "description": "Greasemonkey scripts",
+  "description": "Violentmonkey scripts",
   "author": "Amir Grozki",
   "license": "MIT",
   "private": true,
