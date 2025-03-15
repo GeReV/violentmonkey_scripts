@@ -1,0 +1,12 @@
+/* Preflights are needed for default values of variables */
+@unocss preflights;
+
+.container {
+  @apply flex gap-1 text-white;
+}
+.btn {
+  @apply p-1 bg-dark b-coolGray b-1 b-solid border-rd-sm text-white text-size-xs hover:bg-dark-2;
+}
+.btn_selected {
+  @apply bg-dark-1;
+}
