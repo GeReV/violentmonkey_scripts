@@ -62,7 +62,7 @@ function SpeedControl() {
 function isInstagramSingleMediaViewPath(pathname: string) {
   return (
     pathname.startsWith('/p/') ||
-    pathname.startsWith('/reel/') ||
+    pathname.includes('/reel/') ||
     ACCOUNT_REEL_URL_REGEX.test(pathname)
   );
 }
@@ -81,9 +81,7 @@ function reset(panel: IPanelResult) {
   }
 
   observe(document.body, () => {
-    const vid = document.querySelector<HTMLVideoElement>(
-      '[role="dialog"] video, video',
-    );
+    const vid = document.querySelector<HTMLVideoElement>('video');
 
     if (!vid) {
       panel.hide();
