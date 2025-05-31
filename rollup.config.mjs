@@ -15,6 +15,7 @@ const extensions = ['.ts', '.tsx', '.mjs', '.js', '.jsx'];
 export default defineConfig(
   Object.entries({
     'instagram_reel_speed': 'src/instagram_reel_speed/index.ts',
+    'ynet_disable_refresh': 'src/ynet_disable_refresh/index.ts',
   }).map(([name, entry]) => ({
     input: entry,
     plugins: [
