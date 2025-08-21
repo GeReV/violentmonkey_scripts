@@ -16,10 +16,9 @@ function smallDiff(a: number, b: number) {
 }
 
 const [getVid, setVid] = createSignal<HTMLVideoElement | null>(null);
+const [getSpeed, setSpeed] = createSignal(1);
 
 function SpeedControl() {
-  const [getSpeed, setSpeed] = createSignal(1);
-
   // Set video's playbackRate when speed or video changes.
   createEffect(() => {
     const vid = getVid();
@@ -63,6 +62,7 @@ function isInstagramSingleMediaViewPath(pathname: string) {
   return (
     pathname.startsWith('/p/') ||
     pathname.includes('/reel/') ||
+    pathname.includes('/stories/') ||
     ACCOUNT_REEL_URL_REGEX.test(pathname)
   );
 }
@@ -93,6 +93,11 @@ function reset(panel: IPanelResult) {
 
       setVid(vid);
 
+      const speed = getSpeed();
+      if (vid) {
+        vid.playbackRate = speed;
+      }
+
       panel.show();
     });
 
@@ -120,6 +125,18 @@ function init() {
     }
   }, 100);
   window.addEventListener('resize', debouncedPositionControl, false);
+  window.addEventListener(
+    'focus',
+    () => {
+      const vid = getVid();
+      const rect = vid?.getBoundingClientRect();
+
+      if (rect?.top == 0 && rect?.left == 0) {
+        positionControl(vid, panel);
+      }
+    },
+    false,
+  );
 
   window.addEventListener('popstate', resetPanel, false);
   onNavigate(resetPanel);
