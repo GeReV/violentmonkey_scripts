@@ -106,8 +106,8 @@ function reset(panel: IPanelResult) {
   });
 }
 
-function closeShareFollowDialog() {
-  const dialog = document.querySelector('div[role="dialog"]');
+function closeShareFollowDialog(root: Document | HTMLElement) {
+  const dialog = root.querySelector('div[role="dialog"]');
 
   if (dialog) {
     console.log('added dialog', dialog);
@@ -159,7 +159,30 @@ function init() {
     false,
   );
 
-  closeShareFollowDialog();
+  closeShareFollowDialog(document.body);
+  observe(
+    document.body,
+    (mutations: MutationRecord[]) => {
+      for (const mutation of mutations) {
+        if (mutation.type === 'childList' && mutation.addedNodes.length > 0) {
+          for (const node of mutation.addedNodes) {
+            if (node.nodeType !== Node.ELEMENT_NODE) {
+              continue;
+            }
+
+            const el = node as HTMLElement;
+
+            if (el.querySelector('div[role="dialog"]')) {
+              closeShareFollowDialog(el);
+
+              return true;
+            }
+          }
+        }
+      }
+    },
+    { childList: true, subtree: true },
+  );
 
   window.addEventListener('popstate', resetPanel, false);
   onNavigate(resetPanel);
