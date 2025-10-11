@@ -106,6 +106,30 @@ function reset(panel: IPanelResult) {
   });
 }
 
+function closeShareFollowDialog() {
+  const dialog = document.querySelector('div[role="dialog"]');
+
+  if (dialog) {
+    console.log('added dialog', dialog);
+  }
+
+  if (
+    dialog &&
+    dialog.textContent?.toLowerCase().includes('shared this with you')
+  ) {
+    const buttons =
+      dialog.querySelectorAll<HTMLButtonElement>('[role="button"]');
+
+    const closeButton = Array.from(buttons).find((btn) =>
+      btn.textContent.toLowerCase().includes('not now'),
+    );
+
+    if (closeButton) {
+      closeButton.click();
+    }
+  }
+}
+
 function init() {
   const panel = getPanel({
     theme: 'dark',
@@ -124,19 +148,18 @@ function init() {
       positionControl(vid, panel);
     }
   }, 100);
-  window.addEventListener('resize', debouncedPositionControl, false);
-  window.addEventListener(
-    'focus',
-    () => {
-      const vid = getVid();
-      const rect = vid?.getBoundingClientRect();
 
-      if (rect?.top == 0 && rect?.left == 0) {
-        positionControl(vid, panel);
-      }
-    },
+  window.addEventListener('resize', debouncedPositionControl, false);
+  window.addEventListener('focus', debouncedPositionControl, false);
+  window.addEventListener('load', debouncedPositionControl, false);
+
+  document.addEventListener(
+    'DOMContentLoaded',
+    debouncedPositionControl,
     false,
   );
+
+  closeShareFollowDialog();
 
   window.addEventListener('popstate', resetPanel, false);
   onNavigate(resetPanel);
