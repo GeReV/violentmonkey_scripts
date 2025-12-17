@@ -71,8 +71,19 @@ function isInstagramSingleMediaViewPath(pathname: string) {
 function positionControl(vid: HTMLVideoElement, panel: IPanelResult) {
   const rect = vid.getBoundingClientRect();
 
-  panel.wrapper.style.top = rect.bottom + 'px';
-  panel.wrapper.style.left = rect.left + 'px';
+  const panelRect = panel.wrapper.getBoundingClientRect();
+
+  if (rect.bottom + panelRect.height > window.innerHeight) {
+    panel.wrapper.style.top = window.innerHeight - panelRect.height + 'px';
+  } else {
+    panel.wrapper.style.top = rect.bottom + 'px';
+  }
+
+  if (rect.bottom + panelRect.height > window.innerHeight) {
+    panel.wrapper.style.left = window.innerWidth - panelRect.width + 'px';
+  } else {
+    panel.wrapper.style.left = rect.left + 'px';
+  }
 }
 
 function reset(panel: IPanelResult) {
