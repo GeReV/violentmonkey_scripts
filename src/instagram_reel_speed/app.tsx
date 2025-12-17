@@ -62,6 +62,7 @@ function isInstagramSingleMediaViewPath(pathname: string) {
   return (
     pathname.startsWith('/p/') ||
     pathname.includes('/reel/') ||
+    pathname.includes('/reels/') ||
     pathname.includes('/stories/') ||
     ACCOUNT_REEL_URL_REGEX.test(pathname)
   );
