@@ -79,7 +79,7 @@ function positionControl(vid: HTMLVideoElement, panel: IPanelResult) {
     panel.wrapper.style.top = rect.bottom + 'px';
   }
 
-  if (rect.bottom + panelRect.height > window.innerHeight) {
+  if (rect.right + panelRect.width > window.innerWidth) {
     panel.wrapper.style.left = window.innerWidth - panelRect.width + 'px';
   } else {
     panel.wrapper.style.left = rect.left + 'px';
