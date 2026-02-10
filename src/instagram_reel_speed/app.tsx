@@ -9,6 +9,7 @@ import { createEffect, createSignal } from 'solid-js';
 import { debounce } from '../utils';
 import { observe } from '@violentmonkey/dom';
 
+const MAX_ATTEMPTS = 6;
 const ACCOUNT_REEL_URL_REGEX = /^\/\w+\/reel\//;
 
 function smallDiff(a: number, b: number) {
@@ -86,6 +87,68 @@ function positionControl(vid: HTMLVideoElement, panel: IPanelResult) {
   }
 }
 
+function findPlayingVideo(): HTMLVideoElement | null {
+  return (
+    Array.from(document.querySelectorAll('video')).find((v) => !v.paused) ??
+    null
+  );
+}
+
+function update(panel: IPanelResult, vid: HTMLVideoElement) {
+  setVid(vid);
+
+  const speed = getSpeed();
+
+  vid.playbackRate = speed;
+
+  vid.addEventListener(
+    'ratechange',
+    () => {
+      if (smallDiff(vid.playbackRate, speed)) {
+        return;
+      }
+
+      requestIdleCallback(() => {
+        vid.playbackRate = speed;
+      });
+    },
+    { once: true },
+  );
+
+  vid.addEventListener(
+    'ended',
+    () => {
+      // Video ended, need to attach to the next one.
+      attachNextVideo(panel);
+    },
+    { once: true },
+  );
+
+  requestIdleCallback(() => {
+    positionControl(vid, panel);
+
+    panel.show();
+  });
+}
+
+function attachNextVideo(panel: IPanelResult, attempt = 0) {
+  if (attempt > MAX_ATTEMPTS) {
+    console.debug('Failed to find next video after 10 attempts, giving up.');
+    panel.hide();
+    return;
+  }
+
+  setTimeout(() => {
+    const vid = findPlayingVideo();
+
+    if (vid) {
+      update(panel, vid);
+    } else {
+      attachNextVideo(panel, attempt + 1);
+    }
+  }, 500);
+}
+
 function reset(panel: IPanelResult) {
   if (!isInstagramSingleMediaViewPath(window.location.pathname)) {
     panel.hide();
@@ -93,25 +156,15 @@ function reset(panel: IPanelResult) {
   }
 
   observe(document.body, () => {
-    const vid = document.querySelector<HTMLVideoElement>('video');
+    const vid =
+      findPlayingVideo() ?? document.querySelector<HTMLVideoElement>('video');
 
     if (!vid) {
       panel.hide();
       return;
     }
 
-    requestIdleCallback(() => {
-      positionControl(vid, panel);
-
-      setVid(vid);
-
-      const speed = getSpeed();
-      if (vid) {
-        vid.playbackRate = speed;
-      }
-
-      panel.show();
-    });
+    update(panel, vid);
 
     // We found a video, can stop observing.
     return true;
@@ -149,7 +202,7 @@ function init() {
   });
   panel.setMovable(true);
 
-  const resetPanel = () => reset(panel);
+  const attachNext = () => attachNextVideo(panel);
 
   render(() => <SpeedControl />, panel.body);
 
@@ -196,9 +249,10 @@ function init() {
     { childList: true, subtree: true },
   );
 
-  window.addEventListener('popstate', resetPanel, false);
-  onNavigate(resetPanel);
-  resetPanel();
+  window.addEventListener('popstate', attachNext, false);
+  onNavigate(attachNext);
+
+  reset(panel);
 }
 
 init();
