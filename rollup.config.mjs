@@ -72,6 +72,7 @@ export default defineConfig(
         '@violentmonkey/url': 'VM',
       },
       indent: false,
+      sourcemap: 'inline',
     },
   })),
 );
