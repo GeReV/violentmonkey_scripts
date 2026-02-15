@@ -4,7 +4,7 @@
 // @description This is a userscript.
 // @match       *://www.instagram.com/*
 // @grant       GM_addStyle
-// @version     1.2.0
+// @version     1.2.1
 // @author      process.env.AUTHOR
 // @require     https://cdn.jsdelivr.net/npm/@violentmonkey/url@0.1
 // @require     https://cdn.jsdelivr.net/npm/@violentmonkey/dom@2

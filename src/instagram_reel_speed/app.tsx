@@ -97,13 +97,12 @@ function findPlayingVideo(): HTMLVideoElement | null {
 function update(panel: IPanelResult, vid: HTMLVideoElement) {
   setVid(vid);
 
-  const speed = getSpeed();
-
-  vid.playbackRate = speed;
+  vid.playbackRate = getSpeed();
 
   vid.addEventListener(
     'ratechange',
     () => {
+      const speed = getSpeed();
       if (smallDiff(vid.playbackRate, speed)) {
         return;
       }
@@ -133,7 +132,9 @@ function update(panel: IPanelResult, vid: HTMLVideoElement) {
 
 function attachNextVideo(panel: IPanelResult, attempt = 0) {
   if (attempt > MAX_ATTEMPTS) {
-    console.debug('Failed to find next video after 10 attempts, giving up.');
+    console.debug(
+      `Failed to find next video after ${MAX_ATTEMPTS} attempts, giving up.`,
+    );
     panel.hide();
     return;
   }
