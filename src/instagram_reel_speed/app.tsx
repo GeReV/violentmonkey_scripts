@@ -124,9 +124,9 @@ function update(panel: IPanelResult, vid: HTMLVideoElement) {
   );
 
   requestIdleCallback(() => {
-    positionControl(vid, panel);
-
     panel.show();
+
+    positionControl(vid, panel);
   });
 }
 
